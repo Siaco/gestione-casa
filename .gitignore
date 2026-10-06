@@ -1,0 +1,33 @@
+# Configurazione e segreti locali: mai nel repository
+.env
+.env.*
+!.env.example
+infra/secrets/*
+!infra/secrets/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+*.mo
+
+# Node
+node_modules/
+frontend/dist/
+frontend/coverage/
+
+# Editor e sistema
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+
+# Dati locali
+data/
+*.log

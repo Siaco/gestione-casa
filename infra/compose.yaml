@@ -1,0 +1,73 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Produzione sul server domestico.
+# Avvio dalla radice del repository:
+#   docker compose --env-file .env -f infra/compose.yaml up -d --build
+name: gestione-casa
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${GC_DB_NOME:-gestione_casa}
+      POSTGRES_USER: ${GC_DB_UTENTE:-gestione_casa}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      TZ: ${TZ:-Europe/Rome}
+    secrets: [db_password]
+    volumes:
+      # PostgreSQL 18 usa /var/lib/postgresql come radice dei dati
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ../backend
+    image: gestione-casa/backend:${GC_VERSIONE:-dev}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GC_AMBIENTE: produzione
+      GC_DB_HOST: db
+      GC_DB_NOME: ${GC_DB_NOME:-gestione_casa}
+      GC_DB_UTENTE: ${GC_DB_UTENTE:-gestione_casa}
+      GC_SMTP_HOST: ${GC_SMTP_HOST:-smtp.gmail.com}
+      GC_SMTP_PORTA: ${GC_SMTP_PORTA:-587}
+      GC_SMTP_UTENTE: ${GC_SMTP_UTENTE:-}
+      GC_MAIL_MITTENTE: ${GC_MAIL_MITTENTE:-}
+      TZ: ${TZ:-Europe/Rome}
+    # I nomi dei file in /run/secrets coincidono con i campi della configurazione
+    secrets:
+      - source: db_password
+      - source: smtp_password
+      - source: session_secret
+    volumes:
+      - allegati:/data/allegati
+
+  web:
+    build:
+      context: ..
+      dockerfile: infra/web.Dockerfile
+    image: gestione-casa/web:${GC_VERSIONE:-dev}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${GC_PORTA_HTTP:-80}:80"
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  smtp_password:
+    file: ./secrets/smtp_password.txt
+  session_secret:
+    file: ./secrets/session_secret.txt
+
+volumes:
+  db-data:
+  allegati:

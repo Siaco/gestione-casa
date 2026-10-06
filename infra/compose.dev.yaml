@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Sviluppo locale: solo il database in container, backend e frontend avviati sulla macchina.
+#   docker compose -f infra/compose.yaml -f infra/compose.dev.yaml up -d db
+# Il database è esposto su localhost:5432; crea anche il database dei test (vedi README).
+services:
+  db:
+    ports:
+      - "127.0.0.1:5432:5432"

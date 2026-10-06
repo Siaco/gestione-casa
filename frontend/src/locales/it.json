@@ -1,0 +1,31 @@
+{
+  "app": {
+    "nome": "Gestione casa",
+    "navigazione": "Navigazione principale",
+    "vaiAlContenuto": "Vai al contenuto"
+  },
+  "nav": {
+    "home": "Oggi"
+  },
+  "home": {
+    "titolo": "Benvenuti",
+    "introduzione": "L'applicazione è in costruzione: qui arriveranno scadenze, spesa, faccende, manutenzioni e molto altro."
+  },
+  "sistema": {
+    "titolo": "Stato del sistema",
+    "verifica": "Verifica in corso…",
+    "ok": "Tutto funziona (versione {version})",
+    "databaseKo": "Il database non risponde",
+    "nonRaggiungibile": "Il server non è raggiungibile"
+  },
+  "nonTrovata": {
+    "titolo": "Pagina non trovata",
+    "tornaHome": "Torna alla pagina iniziale"
+  },
+  "errori": {
+    "sconosciuto": "Si è verificato un errore imprevisto",
+    "validation": {
+      "invalid_request": "Alcuni dati non sono validi"
+    }
+  }
+}

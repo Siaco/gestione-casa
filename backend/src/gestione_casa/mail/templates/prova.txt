@@ -1,0 +1,5 @@
+{{ _("Ciao %(nome)s,", nome=nome) }}
+
+{{ _("questa è una mail di prova: se la leggi, l'invio delle mail funziona.") }}
+
+{{ _("Inviata il %(data)s.", data=data) }}

@@ -1,0 +1,35 @@
+# Italian translations for gestione-casa.
+# Copyright (C) 2026 Contributori di gestione-casa
+# This file is distributed under the same license as the gestione-casa
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gestione-casa 0.1.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-06 20:16+0200\n"
+"PO-Revision-Date: 2026-10-06 20:16+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: it\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "Ciao %(nome)s,"
+msgstr ""
+
+msgid "Gestione casa: mail di prova"
+msgstr ""
+
+#, python-format
+msgid "Inviata il %(data)s."
+msgstr ""
+
+msgid "questa è una mail di prova: se la leggi, l'invio delle mail funziona."
+msgstr ""
+

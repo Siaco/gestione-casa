@@ -1,0 +1,5 @@
+# Fine riga LF ovunque (sviluppo anche da Windows)
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pdf binary

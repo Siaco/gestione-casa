@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Configurazione gitleaks: regole predefinite più eccezioni per i file d'esempio.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "File d'esempio senza segreti reali"
+paths = [
+  '''\.env\.example$''',
+  '''docs/.*\.md$''',
+]
