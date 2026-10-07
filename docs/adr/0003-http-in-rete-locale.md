@@ -9,7 +9,7 @@ Nella 1.0 l'app è accessibile solo dalla rete di casa. L'installazione come PWA
 
 ## Decisione
 
-HTTP in rete locale, raggiungibile con un nome fisso (per esempio `casa.lan`). Installazione come PWA rimandata alla 2.0, insieme all'HTTPS e all'accesso dall'esterno. Caddy è configurato con `auto_https off` e risponde su qualsiasi nome sulla porta 80.
+HTTP in rete locale, raggiungibile con il nome che il router assegna al server: `zeus.fritz.box` (FRITZ!Box, nessuna configurazione necessaria). Installazione come PWA rimandata alla 2.0, insieme all'HTTPS e all'accesso dall'esterno. Caddy è configurato con `auto_https off` e risponde su qualsiasi nome sulla porta 80.
 
 ## Alternative scartate
 

@@ -25,7 +25,7 @@ cp .env.example .env            # e adatta i valori
 docker compose --env-file .env -f infra/compose.yaml up -d --build
 ```
 
-L'app risponde in HTTP sulla porta 80 del server (per esempio `http://casa.lan`).
+L'app risponde in HTTP sulla porta 80 del server (a casa: `http://zeus.fritz.box`).
 
 ## Licenza
 

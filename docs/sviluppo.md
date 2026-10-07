@@ -99,7 +99,7 @@ docker compose -f infra/compose.yaml ps
 curl http://localhost/api/health
 ```
 
-Nome in rete locale: sul router assegna un IP riservato al server e, se il router lo permette, un nome DNS locale (per esempio `casa.lan`). In alternativa aggiungi il nome al file hosts dei computer; sugli smartphone si usa l'indirizzo IP.
+Nome in rete locale: il FRITZ!Box assegna da solo un nome a ogni dispositivo, quindi il server è raggiungibile come `http://zeus.fritz.box` (IP riservato 192.168.178.51). Con un router diverso: IP riservato e, se possibile, un nome DNS locale; in alternativa il file hosts dei computer.
 
 Criterio di completamento: la pagina iniziale mostra "Tutto funziona" da computer e smartphone.
 
@@ -114,6 +114,18 @@ docker compose -f infra/compose.yaml exec backend gestione-casa mail-prova --a t
 
 Criterio di completamento: la mail arriva nella posta in arrivo e non nello spam.
 
-### M0-11: GitHub Project
+### M0-11 e milestone successive: GitHub Project e backlog
 
-Crea un Project collegato al repository con i campi numerici **Stima (ore)** e **Ore effettive**, le etichette `WP0`…`WP14` e le milestone `M0`…`M6`. Crea le issue di M1 con la stima. Registra le ore effettive di M0 sulle issue M0-01…M0-12.
+Il backlog di ogni milestone sta in `docs/backlog/Mx.md` (una sezione per attività, con stima e criterio di completamento). Lo script `docs/backlog/carica-su-github.sh` crea etichette `WP0`…`WP14`, milestone `M0`…`M6`, il Project "Gestione casa" con i campi **Stima (ore)** e **Ore effettive**, e una issue per attività con la stima compilata. È rieseguibile: non duplica ciò che esiste già.
+
+```sh
+# una volta sola: GitHub CLI con il permesso sui Project
+gh auth login
+gh auth refresh -s project
+
+# dalla radice del repository (su Windows da Git Bash)
+DRY_RUN=1 docs/backlog/carica-su-github.sh docs/backlog/M1.md   # anteprima
+docs/backlog/carica-su-github.sh docs/backlog/M1.md
+```
+
+Alla chiusura di ogni issue si compila **Ore effettive**; a fine milestone la revisione va in `docs/revisioni/Mx.md` (esempio: [M0](revisioni/M0.md)).

@@ -1,6 +1,6 @@
 # Web app per la gestione casalinga: documento iniziale
 
-Versione del documento: 0.7 · 6 ottobre 2026 · Stato: bozza condivisa, decisioni di progetto
+Versione del documento: 0.8 · 7 ottobre 2026 · Stato: bozza condivisa, decisioni di progetto
 
 ## 1. Obiettivo e perimetro
 
@@ -108,6 +108,7 @@ Un elemento privato è visibile e modificabile solo dal proprietario.
 | `Utente` | nome, email, hash password, lingua (predefinita `it`), attivo, creato il |
 | `Invito` | email, creato da, hash del token, scadenza, usato il |
 | `TokenRecuperoPassword` | utente, hash del token, scadenza (1 ora), usato il |
+| `Sessione` | utente, hash del token, creata il, scade il, ultimo uso, dispositivo (user agent); revocabile, eliminata al logout e al cambio password |
 | `RedditoNetto` | utente, importo mensile (centesimi), valido dal, visibile al partner (sì/no) |
 | `Casa` | nome, indirizzo, note |
 | `Veicolo` | nome, targa, tipo, anno, km attuali (derivati dall'ultima `LetturaKm`) |
@@ -165,7 +166,7 @@ Le occorrenze di scadenze, faccende ed eventi non sono salvate: si calcolano dal
 - Account Gmail dedicato all'app, con verifica in due passaggi e password per le app.
 - Backup automatico giornaliero del database e degli allegati, con rotazione e destinazione scelta dall'amministratore di sistema (paragrafo 11.11).
 - Accesso limitato alla rete locale nella 1.0; l'esposizione esterna richiede il lavoro di hardening della 2.0.
-- **HTTP in rete locale nella 1.0.** L'app è raggiungibile in HTTP tramite un nome fisso in rete locale (per esempio `casa.lan`, configurato sul router o con un indirizzo IP riservato al server). Conseguenze accettate: niente installazione come PWA, cookie di sessione senza attributo `Secure` (ma con `HttpOnly` e `SameSite=Lax`), traffico in chiaro protetto solo dalla cifratura della rete Wi-Fi. L'HTTPS arriva con la 2.0; la configurazione del reverse proxy è già predisposta per attivarlo.
+- **HTTP in rete locale nella 1.0.** L'app è raggiungibile in HTTP tramite il nome che il router assegna al server in rete locale: `zeus.fritz.box` (FRITZ!Box, indirizzo IP 192.168.178.51; verificato in M0). Conseguenze accettate: niente installazione come PWA, cookie di sessione senza attributo `Secure` (ma con `HttpOnly` e `SameSite=Lax`), traffico in chiaro protetto solo dalla cifratura della rete Wi-Fi. L'HTTPS arriva con la 2.0; la configurazione del reverse proxy è già predisposta per attivarlo.
 
 ### 9.1 Account: primo avvio, inviti e recupero password
 
@@ -181,7 +182,7 @@ Le occorrenze di scadenze, faccende ed eventi non sono salvate: si calcolano dal
 2. Adattamento del catalogo di manutenzione (Appendice A) ai casi reali, anche dopo il rilascio grazie alla modularità.
 3. Seconda copia del backup fuori casa: tecnicamente già configurabile, resta da decidere se e quando attivarla.
 
-Decisioni chiuse: calendario (solo gli eventi privati compaiono come "Occupato"); visibilità dello stipendio rimessa alla scelta di ciascun utente, con valore predefinito "non condiviso"; catalogo delle tipologie di manutenzione definito e modulare (Appendice A); disponibilità di sviluppo di circa 16 ore a settimana; codice e integrazione continua su GitHub; distribuzione open source prevista al termine della 3.0; backup con destinazione scelta dall'amministratore di sistema (predefinita: copia locale); avvio del progetto il 6 ottobre 2026; licenza AGPL-3.0-or-later; predisposizione alla traduzione fin dall'inizio; funzionalità Could della 1.0 come obiettivo non vincolante per il rilascio; WP14 assegnato alla milestone M6; HTTP in rete locale e installazione PWA rimandata alla 2.0; primo avvio guidato con invito del secondo utente e recupero password via mail; allegati su volume dedicato (PDF e immagini, massimo 20 MB).
+Decisioni chiuse: calendario (solo gli eventi privati compaiono come "Occupato"); visibilità dello stipendio rimessa alla scelta di ciascun utente, con valore predefinito "non condiviso"; catalogo delle tipologie di manutenzione definito e modulare (Appendice A); disponibilità di sviluppo di circa 16 ore a settimana; codice e integrazione continua su GitHub; distribuzione open source prevista al termine della 3.0; backup con destinazione scelta dall'amministratore di sistema (predefinita: copia locale); avvio del progetto il 6 ottobre 2026; licenza AGPL-3.0-or-later; predisposizione alla traduzione fin dall'inizio; funzionalità Could della 1.0 come obiettivo non vincolante per il rilascio; WP14 assegnato alla milestone M6; HTTP in rete locale e installazione PWA rimandata alla 2.0; primo avvio guidato con invito del secondo utente e recupero password via mail; allegati su volume dedicato (PDF e immagini, massimo 20 MB); invio mail con account Gmail dedicato e password per le app, dopo il confronto con i servizi transazionali (da rivalutare con il dominio della 2.0); nome in rete locale `zeus.fritz.box`; sessioni salvate nel database (revocabili).
 
 ---
 
@@ -308,7 +309,7 @@ Le funzionalità Could fanno parte dell'ambito e del piano della 1.0 (paragrafo 
 
 | Rischio | Probabilità | Impatto | Mitigazione |
 | --- | --- | --- | --- |
-| Gmail cambia regole o limita l'invio | Media | Alto | Livello di invio astratto; alternativa SMTP pronta |
+| Gmail cambia regole o limita l'invio (per esempio dismissione delle password per le app, già avvenuta per Google Workspace) | Media | Alto | Livello di invio astratto: si passa a un servizio transazionale (Brevo, SMTP2GO) cambiando solo la configurazione; valutazione già fatta in M0 |
 | Errori su ricorrenze e ora legale | Media | Alto | Test su date limite, fuso `Europe/Rome` esplicito |
 | Dato privato esposto per una query dimenticata | Bassa | Alto | Filtro unico nel backend e test automatici di visibilità su ogni endpoint |
 | Quote sbagliate per arrotondamenti | Media | Medio | Importi in centesimi, test sui valori limite, resto sull'ultima quota |
@@ -397,7 +398,7 @@ Da completare prima o durante la prima settimana di M0 (attività M0-01 del para
 | Sistema operativo | Ubuntu Server LTS (24.04 o 26.04), architettura x86-64 o ARM64 |
 | Risorse minime | 2 core, 4 GB di RAM (8 consigliati), 20 GB liberi per l'app più lo spazio per gli allegati |
 | Software | Docker Engine aggiornato con Docker Compose v2 |
-| Rete | Indirizzo IP riservato sul router e nome fisso in rete locale (per esempio `casa.lan`) |
+| Rete | Indirizzo IP riservato sul router e nome fisso in rete locale (`zeus.fritz.box`) |
 | Orologio | Sincronizzazione NTP attiva (indispensabile per mail e scadenze) |
 | Backup | Supporto di destinazione disponibile e montato (predefinito: disco locale separato da quello del sistema) |
 
@@ -440,7 +441,7 @@ Ogni attività diventa una issue con etichetta `WP0`. Totale stimato: circa 46 o
 | M0-06 | Infrastruttura di traduzione: react-i18next con `it.json`, Babel nel backend, un modello mail Jinja2 di prova, controllo delle chiavi mancanti e della regola contro i testi scritti nel codice | 8 | Una stringa scritta direttamente nel codice fa fallire la pipeline |
 | M0-07 | Docker Compose: backend, frontend compilato servito da Caddy, PostgreSQL, volumi per database e allegati, Docker secrets, configurazioni di sviluppo e produzione | 5 | `docker compose up` avvia tutto da zero su una macchina pulita |
 | M0-08 | Pipeline GitHub Actions: analisi statica, controllo dei tipi, test di backend e frontend, compilazione delle immagini, gitleaks, controllo delle traduzioni | 4 | Pipeline verde sul ramo principale e bloccante sulle pull request |
-| M0-09 | Primo deploy sul server domestico con il nome in rete locale | 3 | L'app risponde su `http://casa.lan` da computer e smartphone |
+| M0-09 | Primo deploy sul server domestico con il nome in rete locale | 3 | L'app risponde su `http://zeus.fritz.box` da computer e smartphone |
 | M0-10 | Mail di prova tramite Gmail dal server, attraverso il livello di invio astratto | 2 | La mail arriva nella posta in arrivo e non nello spam |
 | M0-11 | Impostazione del GitHub Project e creazione delle issue di M1 con stima | 2 | Tutte le attività di M1 sono nel Project, con stima in ore |
 | M0-12 | Registro delle decisioni in `docs/adr/`: prime note (stack, licenza, HTTP in rete locale, allegati su volume) | 2 | Note presenti nel repository |
