@@ -39,6 +39,8 @@ services:
       GC_SMTP_PORTA: ${GC_SMTP_PORTA:-587}
       GC_SMTP_UTENTE: ${GC_SMTP_UTENTE:-}
       GC_MAIL_MITTENTE: ${GC_MAIL_MITTENTE:-}
+      GC_SESSIONE_DURATA_GIORNI: ${GC_SESSIONE_DURATA_GIORNI:-30}
+      GC_COOKIE_SICURO: ${GC_COOKIE_SICURO:-false}
       TZ: ${TZ:-Europe/Rome}
     # Il backend legge /run/secrets/gc_<campo> (prefisso GC_ della configurazione, vedi config.py)
     secrets:
