@@ -31,3 +31,6 @@ Thumbs.db
 # Dati locali
 data/
 *.log
+
+# Output delle sessioni di Claude (Cowork): non fanno parte del progetto
+Claude outputs/
