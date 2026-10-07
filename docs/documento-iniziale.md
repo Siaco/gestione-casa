@@ -106,12 +106,12 @@ Un elemento privato è visibile e modificabile solo dal proprietario.
 | Entità | Campi principali |
 | --- | --- |
 | `Utente` | nome, email, hash password, lingua (predefinita `it`), attivo, creato il |
-| `Invito` | email, creato da, hash del token, scadenza, usato il |
-| `TokenRecuperoPassword` | utente, hash del token, scadenza (1 ora), usato il |
-| `Sessione` | utente, hash del token, creata il, scade il, ultimo uso, dispositivo (user agent); revocabile, eliminata al logout e al cambio password |
+| `Invito` | email, creato da, impronta del token, scadenza, usato il |
+| `TokenRecuperoPassword` | utente, impronta del token, scadenza (1 ora), usato il |
+| `Sessione` | utente, impronta del token, creata il, scade il, ultimo uso, dispositivo (user agent); revocabile, eliminata al logout e al cambio password |
 | `RedditoNetto` | utente, importo mensile (centesimi), valido dal, visibile al partner (sì/no) |
 | `Casa` | nome, indirizzo, note |
-| `Veicolo` | nome, targa, tipo, anno, km attuali (derivati dall'ultima `LetturaKm`) |
+| `Veicolo` | nome, targa (unica se presente), tipo (auto, moto, furgone, altro), anno, km attuali (derivati dall'ultima `LetturaKm`) |
 | `LetturaKm` | veicolo, data, km, origine (manuale / intervento) |
 | `Categoria` | ambito (scadenza / reparto della spesa), nome (chiave di traduzione per le voci predefinite), origine (predefinito/personalizzato), attivo, ordine |
 | `Scadenza` | titolo, categoria, importo previsto, data di inizio, ricorrenza (RRULE), stato, ripartizione predefinita, casa/veicolo opzionali, allegati |
