@@ -2,6 +2,16 @@
 """Modelli del database. Ogni modello va importato qui perché Alembic lo veda."""
 
 from gestione_casa.models.base import Base
-from gestione_casa.models.utente import Utente
+from gestione_casa.models.casa_veicolo import Casa, TipoVeicolo, Veicolo
+from gestione_casa.models.utente import Invito, Sessione, TokenRecuperoPassword, Utente
 
-__all__ = ["Base", "Utente"]
+__all__ = [
+    "Base",
+    "Casa",
+    "Invito",
+    "Sessione",
+    "TipoVeicolo",
+    "TokenRecuperoPassword",
+    "Utente",
+    "Veicolo",
+]
