@@ -26,6 +26,11 @@
     "sconosciuto": "Si è verificato un errore imprevisto",
     "validation": {
       "invalid_request": "Alcuni dati non sono validi"
+    },
+    "auth": {
+      "password_too_short": "La password deve avere almeno {min} caratteri",
+      "password_too_long": "La password può avere al massimo {max} caratteri",
+      "password_equals_email": "La password non può essere uguale all'indirizzo email"
     }
   }
 }
