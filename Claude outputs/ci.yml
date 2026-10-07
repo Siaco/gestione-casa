@@ -1,0 +1,117 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  segreti:
+    name: Analisi dei segreti
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # tutta la cronologia: un segreto cancellato resta nei commit
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: gestione_casa
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: gestione_casa_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U gestione_casa"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      GC_DATABASE_URL: postgresql+psycopg://gestione_casa:ci@localhost:5432/gestione_casa_test
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Formattazione
+        run: uv run ruff format --check .
+      - name: Analisi statica
+        run: uv run ruff check .
+      - name: Controllo dei tipi
+        run: uv run mypy
+      - name: Traduzioni
+        run: uv run python scripts/controlla_traduzioni.py
+      - name: Test (unitari e d'integrazione)
+        run: uv run pytest
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Formattazione
+        run: npm run format:check
+      - name: Analisi statica (inclusi i testi scritti nel codice)
+        run: npm run lint
+      - name: Controllo dei tipi
+        run: npm run typecheck
+      - name: Traduzioni
+        run: npm run i18n:check
+      - name: Test
+        run: npm test
+      - name: Compilazione
+        run: npm run build
+
+  immagini:
+    name: Immagini Docker
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: docker/setup-buildx-action@v3
+      - name: Backend
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          push: false
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
+      - name: Web (frontend + Caddy)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/web.Dockerfile
+          push: false
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=web
+      - name: Configurazione Compose
+        run: |
+          cp .env.example .env
+          for f in db_password smtp_password session_secret; do printf ci > infra/secrets/$f.txt; done
+          docker compose --env-file .env -f infra/compose.yaml config -q
