@@ -38,14 +38,25 @@ class Visibilita(enum.StrEnum):
 class ContenutoMixin(TimestampMixin):
     """Campi di ogni entità di contenuto (paragrafo 6): proprietario e visibilità.
 
-    Il filtro di visibilità unico per tutti i repository arriva con il WP1.
+    Le query su queste entità sono filtrate automaticamente in base all'utente della sessione
+    (``gestione_casa.visibilita``): un elemento privato è visibile e modificabile solo dal
+    proprietario.
     """
 
     @declared_attr
     def proprietario_id(cls) -> Mapped[int]:
         return mapped_column(ForeignKey("utente.id", ondelete="RESTRICT"), index=True)
 
+    # Testo con vincolo di controllo (non un tipo enumerato di PostgreSQL), come per i veicoli
     visibilita: Mapped[Visibilita] = mapped_column(
-        Enum(Visibilita, name="visibilita", values_callable=lambda e: [m.value for m in e]),
+        Enum(
+            Visibilita,
+            name="visibilita",
+            native_enum=False,
+            create_constraint=True,
+            length=10,
+            values_callable=lambda e: [m.value for m in e],
+        ),
         default=Visibilita.CONDIVISO,
+        server_default=Visibilita.CONDIVISO.value,
     )
