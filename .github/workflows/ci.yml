@@ -46,7 +46,7 @@ jobs:
       GC_DATABASE_URL: postgresql+psycopg://gestione_casa:ci@localhost:5432/gestione_casa_test
     steps:
       - uses: actions/checkout@v5
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - run: uv sync --frozen
