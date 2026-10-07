@@ -40,11 +40,14 @@ services:
       GC_SMTP_UTENTE: ${GC_SMTP_UTENTE:-}
       GC_MAIL_MITTENTE: ${GC_MAIL_MITTENTE:-}
       TZ: ${TZ:-Europe/Rome}
-    # I nomi dei file in /run/secrets coincidono con i campi della configurazione
+    # Il backend legge /run/secrets/gc_<campo> (prefisso GC_ della configurazione, vedi config.py)
     secrets:
       - source: db_password
+        target: gc_db_password
       - source: smtp_password
+        target: gc_smtp_password
       - source: session_secret
+        target: gc_session_secret
     volumes:
       - allegati:/data/allegati
 

@@ -1,5 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Configurazione da variabili d'ambiente (prefisso GC_) e Docker secrets (/run/secrets)."""
+"""Configurazione da variabili d'ambiente (prefisso GC_) e Docker secrets (/run/secrets).
+
+Anche i file dei segreti usano il prefisso: il campo ``db_password`` si legge da
+``/run/secrets/gc_db_password`` (in Compose: ``target: gc_db_password``).
+"""
 
 from functools import lru_cache
 from pathlib import Path
