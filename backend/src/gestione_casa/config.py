@@ -42,8 +42,12 @@ class Settings(BaseSettings):
     mail_mittente: str = ""
     mail_timeout_secondi: float = 20.0
 
-    # Sicurezza (usata dal WP1)
+    # Sicurezza e sessioni (paragrafo 9)
     session_secret: SecretStr = SecretStr("")
+    sessione_durata_giorni: int = Field(default=30, ge=1)
+    sessione_nome_cookie: str = "gc_sessione"
+    # False nella 1.0 (HTTP in rete locale, ADR 0003); True dalla 2.0 con HTTPS
+    cookie_sicuro: bool = False
 
     # Allegati (paragrafo 8.3 del documento iniziale)
     cartella_allegati: Path = Path("/data/allegati")

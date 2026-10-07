@@ -30,7 +30,9 @@
     "auth": {
       "password_too_short": "La password deve avere almeno {min} caratteri",
       "password_too_long": "La password può avere al massimo {max} caratteri",
-      "password_equals_email": "La password non può essere uguale all'indirizzo email"
+      "password_equals_email": "La password non può essere uguale all'indirizzo email",
+      "invalid_credentials": "Email o password non corrette",
+      "not_authenticated": "Accedi per continuare"
     }
   }
 }
