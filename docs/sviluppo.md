@@ -81,7 +81,7 @@ git remote add origin git@github.com:<utente>/gestione-casa.git
 git push -u origin main
 ```
 
-Nelle impostazioni del repository: attiva *Secret scanning* e *Push protection* (Settings → Advanced Security) e proteggi `main` richiedendo la pipeline verde.
+Nelle impostazioni del repository, se disponibili per il tuo piano: *Secret scanning* e *Push protection* (Settings → Advanced Security) e protezione di `main` con pipeline verde obbligatoria. Su un repository privato di un account gratuito possono mancare: il controllo dei segreti è comunque garantito da gitleaks, nella pipeline (cronologia completa) e prima di ogni commit.
 
 ### M0-09: primo deploy sul server domestico
 
