@@ -10,3 +10,12 @@ test('errori del backend tradotti con i parametri (formato ICU)', () => {
 test('codice di errore sconosciuto: si ripiega sulla chiave', () => {
   expect(i18n.exists('errori.codice.inesistente')).toBe(false);
 });
+
+test('plurali ICU', () => {
+  expect(i18n.t('errori.auth.too_many_attempts', { minutes: 1 })).toBe(
+    'Troppi tentativi: riprova tra un minuto',
+  );
+  expect(i18n.t('errori.auth.too_many_attempts', { minutes: 15 })).toBe(
+    'Troppi tentativi: riprova tra 15 minuti',
+  );
+});

@@ -3,6 +3,7 @@
 
 from gestione_casa.models.base import Base
 from gestione_casa.models.casa_veicolo import Casa, TipoVeicolo, Veicolo
+from gestione_casa.models.tentativo import TentativoFallito
 from gestione_casa.models.utente import Invito, Sessione, TokenRecuperoPassword, Utente
 
 # Il filtro di visibilità si registra all'importazione: chi usa i modelli lo ha sempre attivo
@@ -13,6 +14,7 @@ __all__ = [
     "Casa",
     "Invito",
     "Sessione",
+    "TentativoFallito",
     "TipoVeicolo",
     "TokenRecuperoPassword",
     "Utente",

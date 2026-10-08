@@ -15,10 +15,18 @@ from fastapi.responses import JSONResponse
 class AppError(Exception):
     """Errore di dominio: codice stabile, stato HTTP, parametri per la traduzione."""
 
-    def __init__(self, code: str, status_code: int = 400, **params: Any) -> None:
+    def __init__(
+        self,
+        code: str,
+        status_code: int = 400,
+        *,
+        headers: dict[str, str] | None = None,
+        **params: Any,
+    ) -> None:
         super().__init__(code)
         self.code = code
         self.status_code = status_code
+        self.headers = headers
         self.params = params
 
 
@@ -28,6 +36,7 @@ def register_error_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=exc.status_code,
             content={"error": {"code": exc.code, "params": exc.params}},
+            headers=exc.headers,
         )
 
     @app.exception_handler(RequestValidationError)
