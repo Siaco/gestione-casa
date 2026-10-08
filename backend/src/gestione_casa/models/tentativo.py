@@ -15,7 +15,7 @@ class TentativoFallito(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     ambito: Mapped[str] = mapped_column(String(20))
-    """Operazione limitata: login, recupero_password, invito."""
+    """Operazione limitata (vedi ``sicurezza.limiti.Ambito``)."""
     chiave: Mapped[str] = mapped_column(String(300))
     """Chi tenta: "ip:<indirizzo>" oppure "email:<indirizzo normalizzato>"."""
     avvenuto_il: Mapped[datetime] = mapped_column(

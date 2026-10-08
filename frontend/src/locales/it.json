@@ -34,7 +34,12 @@
       "invalid_credentials": "Email o password non corrette",
       "not_authenticated": "Accedi per continuare",
       "csrf_invalid": "Sessione non più valida per questa operazione: ricarica la pagina e riprova",
-      "too_many_attempts": "{minutes, plural, one {Troppi tentativi: riprova tra un minuto} other {Troppi tentativi: riprova tra # minuti}}"
+      "too_many_attempts": "{minutes, plural, one {Troppi tentativi: riprova tra un minuto} other {Troppi tentativi: riprova tra # minuti}}",
+      "email_invalid": "Indirizzo email non valido"
+    },
+    "setup": {
+      "invalid_code": "Codice di configurazione non corretto",
+      "already_done": "La configurazione iniziale è già stata completata"
     }
   }
 }

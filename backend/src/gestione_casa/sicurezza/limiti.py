@@ -31,6 +31,7 @@ class Ambito(enum.StrEnum):
     LOGIN = "login"
     RECUPERO_PASSWORD = "recupero_password"  # noqa: S105 (nome di un ambito, non una password)
     INVITO = "invito"
+    PRIMO_AVVIO = "primo_avvio"
 
 
 def chiavi(request: Request, email: str | None = None) -> list[str]:

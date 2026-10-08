@@ -18,6 +18,7 @@ from gestione_casa.config import Settings, get_settings
 from gestione_casa.errors import AppError
 from gestione_casa.models import Utente
 from gestione_casa.sicurezza.csrf import token_csrf
+from gestione_casa.sicurezza.email import normalizza_email
 from gestione_casa.sicurezza.limiti import (
     Ambito,
     azzera,
@@ -54,11 +55,7 @@ class SessioneOut(BaseModel):
     csrf_token: str
 
 
-def normalizza_email(email: str) -> str:
-    return email.strip().lower()
-
-
-def _imposta_cookie(risposta: Response, token: str, config: Settings) -> None:
+def imposta_cookie_sessione(risposta: Response, token: str, config: Settings) -> None:
     risposta.set_cookie(
         config.sessione_nome_cookie,
         token,
@@ -94,7 +91,7 @@ async def login(
     await elimina_sessioni_scadute(db)
     token = await crea_sessione(db, utente, request.headers.get("user-agent"))
     await db.commit()
-    _imposta_cookie(response, token, config)
+    imposta_cookie_sessione(response, token, config)
     return SessioneOut(utente=UtenteOut.da(utente), csrf_token=token_csrf(token))
 
 
