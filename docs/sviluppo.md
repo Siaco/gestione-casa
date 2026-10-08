@@ -130,3 +130,13 @@ docs/backlog/carica-su-github.sh docs/backlog/M1.md
 ```
 
 Alla chiusura di ogni issue si compila **Ore effettive**; a fine milestone la revisione va in `docs/revisioni/Mx.md` (esempio: [M0](revisioni/M0.md)).
+
+## Amministrazione
+
+### Password dimenticata senza mail funzionante
+
+Comando di emergenza sul server: chiede la nuova password senza mostrarla e chiude tutte le sessioni dell'utente.
+
+```sh
+docker compose -f infra/compose.yaml exec -it backend gestione-casa reimposta-password --email indirizzo@example.com
+```
