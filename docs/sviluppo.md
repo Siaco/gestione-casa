@@ -105,6 +105,16 @@ Nome in rete locale: il FRITZ!Box assegna da solo un nome a ogni dispositivo, qu
 
 Criterio di completamento: la pagina iniziale mostra "Tutto funziona" da computer e smartphone.
 
+### Primo avvio: creazione del primo utente
+
+Finché non esistono utenti, il backend scrive nei log un codice monouso (cambia a ogni riavvio):
+
+```sh
+docker compose -f infra/compose.yaml logs backend | grep "Configurazione iniziale"
+```
+
+Apri l'app, inserisci il codice e crea il primo utente; da quel momento la configurazione iniziale si disattiva. Il secondo utente si aggiunge con un invito.
+
 ### M0-10: mail di prova
 
 Sull'account Gmail dedicato: attiva la verifica in due passaggi, crea una password per le app e mettila in `infra/secrets/smtp_password.txt`; imposta `GC_SMTP_UTENTE` e `GC_MAIL_MITTENTE` in `.env`. Poi:
