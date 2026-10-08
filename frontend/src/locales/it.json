@@ -33,7 +33,8 @@
       "password_equals_email": "La password non può essere uguale all'indirizzo email",
       "invalid_credentials": "Email o password non corrette",
       "not_authenticated": "Accedi per continuare",
-      "csrf_invalid": "Sessione non più valida per questa operazione: ricarica la pagina e riprova"
+      "csrf_invalid": "Sessione non più valida per questa operazione: ricarica la pagina e riprova",
+      "too_many_attempts": "{minutes, plural, one {Troppi tentativi: riprova tra un minuto} other {Troppi tentativi: riprova tra # minuti}}"
     }
   }
 }

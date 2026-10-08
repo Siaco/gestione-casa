@@ -18,6 +18,13 @@ from gestione_casa.config import Settings, get_settings
 from gestione_casa.errors import AppError
 from gestione_casa.models import Utente
 from gestione_casa.sicurezza.csrf import token_csrf
+from gestione_casa.sicurezza.limiti import (
+    Ambito,
+    azzera,
+    chiavi,
+    registra_fallimento,
+    verifica_limite,
+)
 from gestione_casa.sicurezza.password import LUNGHEZZA_MASSIMA, verifica_fittizia, verifica_password
 
 router = APIRouter(prefix="/auth", tags=["autenticazione"])
@@ -67,17 +74,23 @@ def _imposta_cookie(risposta: Response, token: str, config: Settings) -> None:
 async def login(
     credenziali: Credenziali, request: Request, response: Response, db: Db, config: Config
 ) -> SessioneOut:
-    utente = await db.scalar(
-        select(Utente).where(func.lower(Utente.email) == normalizza_email(credenziali.email))
-    )
+    email = normalizza_email(credenziali.email)
+    limitate = chiavi(request, email)
+    await verifica_limite(db, Ambito.LOGIN, limitate)
+    utente = await db.scalar(select(Utente).where(func.lower(Utente.email) == email))
     if utente is None:
         verifica_fittizia(credenziali.password)  # stessi tempi: non si capisce se l'email esiste
-        raise AppError("auth.invalid_credentials", status_code=401)
-    esito = verifica_password(utente.hash_password, credenziali.password)
-    if not esito.valida or not utente.attivo:
+        esito = None
+    else:
+        esito = verifica_password(utente.hash_password, credenziali.password)
+    if utente is None or esito is None or not esito.valida or not utente.attivo:
+        await registra_fallimento(db, Ambito.LOGIN, limitate)
+        await db.commit()
         raise AppError("auth.invalid_credentials", status_code=401)
     if esito.nuovo_hash is not None:
         utente.hash_password = esito.nuovo_hash
+    # Si azzera solo l'email: un accesso riuscito non deve sbloccare un indirizzo IP sospetto
+    await azzera(db, Ambito.LOGIN, [c for c in limitate if c.startswith("email:")])
     await elimina_sessioni_scadute(db)
     token = await crea_sessione(db, utente, request.headers.get("user-agent"))
     await db.commit()
