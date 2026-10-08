@@ -50,7 +50,14 @@ def _sessioni(engine: Engine) -> list[Sessione]:
 async def test_login_riuscito_imposta_un_cookie_sicuro(client: AsyncClient, engine: Engine) -> None:
     r = await _login(client, email="  CAMILLO@example.com ")
     assert r.status_code == 200
-    assert r.json() == {"id": 1, "nome": "Camillo", "email": "Camillo@Example.com", "lingua": "it"}
+    corpo = r.json()
+    assert corpo["utente"] == {
+        "id": 1,
+        "nome": "Camillo",
+        "email": "Camillo@Example.com",
+        "lingua": "it",
+    }
+    assert len(corpo["csrf_token"]) == 64
     intestazione = r.headers["set-cookie"].lower()
     assert intestazione.startswith(f"{COOKIE}=")
     assert (
@@ -63,7 +70,8 @@ async def test_login_riuscito_imposta_un_cookie_sicuro(client: AsyncClient, engi
     assert sessione.impronta_token == impronta(token) and token != sessione.impronta_token
 
     me = await client.get("/api/auth/me")
-    assert me.status_code == 200 and me.json()["nome"] == "Camillo"
+    assert me.status_code == 200 and me.json()["utente"]["nome"] == "Camillo"
+    assert me.json()["csrf_token"] == corpo["csrf_token"]
 
 
 @pytest.mark.parametrize(
